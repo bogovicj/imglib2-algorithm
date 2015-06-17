@@ -33,18 +33,20 @@
 
 package net.imglib2.algorithm.neighborhood;
 
-import net.imglib2.AbstractInterval;
+import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
-import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RandomAccessible;
 import net.imglib2.Sampler;
 
-public abstract class CrossNeighborhoodLocalizableSampler< T > extends AbstractInterval implements Localizable, Sampler< Neighborhood< T > >
+public abstract class CrossNeighborhoodLocalizableSampler< T > extends AbstractEuclideanSpace implements Localizable, Sampler< Neighborhood< T > >
 {
-	protected final RandomAccessibleInterval< T > source;
+	protected final RandomAccessible< T > source;
 
 	protected final Interval span;
+	
+	protected final Interval sourceInterval;
 
 	protected final CrossNeighborhoodFactory< T > neighborhoodFactory;
 
@@ -56,32 +58,42 @@ public abstract class CrossNeighborhoodLocalizableSampler< T > extends AbstractI
 
 	protected final long[] currentMax;
 
-	public CrossNeighborhoodLocalizableSampler( final RandomAccessibleInterval< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory )
+	public CrossNeighborhoodLocalizableSampler( final RandomAccessible< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory, final Interval accessInterval )
 	{
-		super( source );
+		super( source.numDimensions() );
 		this.source = source;
 		this.span = span;
 		neighborhoodFactory = factory;
 		currentPos = new long[ n ];
 		currentMin = new long[ n ];
 		currentMax = new long[ n ];
-		final long[] accessMin = new long[ n ];
-		final long[] accessMax = new long[ n ];
-		source.min( accessMin );
-		source.max( accessMax );
-		for ( int d = 0; d < n; ++d )
+		if ( accessInterval == null )
+			sourceInterval = null;
+		else
 		{
-			accessMin[ d ] += span.min( d );
-			accessMax[ d ] += span.max( d );
+			final long[] accessMin = new long[ n ];
+			final long[] accessMax = new long[ n ];
+			accessInterval.min( accessMin );
+			accessInterval.max( accessMax );
+			for ( int d = 0; d < n; ++d )
+			{
+				accessMin[ d ] += span.min( d );
+				accessMax[ d ] += span.max( d );
+			}
+			sourceInterval = new FinalInterval( accessMin, accessMax );
 		}
-		currentNeighborhood = neighborhoodFactory.create( currentPos, currentMin, currentMax, span, source.randomAccess( new FinalInterval( accessMin, accessMax ) ) );
+		currentNeighborhood = neighborhoodFactory.create( currentPos, currentMin, currentMax, span,
+				sourceInterval == null ? source.randomAccess() : source.randomAccess( sourceInterval ) );
+		
+//		currentNeighborhood = neighborhoodFactory.create( currentPos, currentMin, currentMax, span, source.randomAccess( new FinalInterval( accessMin, accessMax ) ) );
 	}
 
 	protected CrossNeighborhoodLocalizableSampler( final CrossNeighborhoodLocalizableSampler< T > c )
 	{
-		super( c.source );
+		super( c.n );
 		source = c.source;
 		span = c.span;
+		sourceInterval = c.sourceInterval;
 		neighborhoodFactory = c.neighborhoodFactory;
 		currentPos = c.currentPos.clone();
 		currentMin = c.currentMin.clone();

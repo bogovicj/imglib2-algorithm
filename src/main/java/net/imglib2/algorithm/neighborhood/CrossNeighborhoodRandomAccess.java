@@ -36,13 +36,19 @@ package net.imglib2.algorithm.neighborhood;
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 
 public final class CrossNeighborhoodRandomAccess< T > extends CrossNeighborhoodLocalizableSampler< T > implements RandomAccess< Neighborhood< T > >
 {
-	public CrossNeighborhoodRandomAccess( final RandomAccessibleInterval< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory )
+	public CrossNeighborhoodRandomAccess( final RandomAccessible< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory )
 	{
-		super( source, span, factory );
+		super( source, span, factory, null );
+	}
+	
+	public CrossNeighborhoodRandomAccess( final RandomAccessible< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory, final Interval interval )
+	{
+		super( source, span, factory, interval );
 	}
 
 	private CrossNeighborhoodRandomAccess( final CrossNeighborhoodRandomAccess< T > c )

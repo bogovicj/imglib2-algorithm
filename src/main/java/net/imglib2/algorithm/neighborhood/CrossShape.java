@@ -35,6 +35,7 @@ package net.imglib2.algorithm.neighborhood;
 
 import java.util.Iterator;
 
+import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.AbstractInterval;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
@@ -49,7 +50,7 @@ import net.imglib2.RandomAccessibleInterval;
 /**
  * A factory for Accessibles on rectangular neighboorhoods.
  * 
- * TODO: support non-isotropic, non-symmetric rectangular neighboorhood shapes.
+ * TODO: support non-isotropic, non-symmetric cross neighboorhood shapes.
  * (the Neighborhood implementation supports it already, we just need to change
  * this factory.)
  * 
@@ -77,24 +78,28 @@ public class CrossShape implements Shape
 		this( span, false );
 	}
 	
-	public < T > NeighborhoodsAccessible< T > neighborhoods( final RandomAccessibleInterval< T > source )
+	public < T > NeighborhoodsIterableInterval< T > neighborhoods( final RandomAccessibleInterval< T > source )
 	{
-		return neighborhoodsRandomAccessible( source );
+		final CrossNeighborhoodFactory< T > f = skipCenter ? CrossNeighborhoodSkipCenterUnsafe.< T >factory() : CrossNeighborhoodUnsafe.< T >factory();
+		final Interval spanInterval = createSpan( source.numDimensions() );
+		return new NeighborhoodsIterableInterval< T >( source, spanInterval, f );
 	}
 
-	public < T > NeighborhoodsAccessible< T > neighborhoodsRandomAccessible( final RandomAccessibleInterval< T > source )
+	public < T > NeighborhoodsAccessible< T > neighborhoodsRandomAccessible( final RandomAccessible< T > source )
 	{
 		final CrossNeighborhoodFactory< T > f = skipCenter ? CrossNeighborhoodSkipCenterUnsafe.< T >factory() : CrossNeighborhoodUnsafe.< T >factory();
 		final Interval spanInterval = createSpan( source.numDimensions() );
 		return new NeighborhoodsAccessible< T >( source, spanInterval, f );
 	}
 
-	public < T > NeighborhoodsAccessible< T > neighborhoodsSafe( final RandomAccessibleInterval< T > source )
+	public < T > NeighborhoodsIterableInterval<T> neighborhoodsSafe( final RandomAccessibleInterval< T > source )
 	{
-		return neighborhoodsRandomAccessibleSafe( source );
+		final CrossNeighborhoodFactory< T > f = skipCenter ? CrossNeighborhoodSkipCenter.< T >factory() : CrossNeighborhood.< T >factory();
+		final Interval spanInterval = createSpan( source.numDimensions() );
+		return new NeighborhoodsIterableInterval< T >( source, spanInterval, f );
 	}
 
-	public < T > NeighborhoodsAccessible< T > neighborhoodsRandomAccessibleSafe( final RandomAccessibleInterval< T > source )
+	public < T > NeighborhoodsAccessible< T > neighborhoodsRandomAccessibleSafe( final RandomAccessible< T > source )
 	{
 		final CrossNeighborhoodFactory< T > f = skipCenter ? CrossNeighborhoodSkipCenter.< T >factory() : CrossNeighborhood.< T >factory();
 		final Interval spanInterval = createSpan( source.numDimensions() );
@@ -113,7 +118,7 @@ public class CrossShape implements Shape
 		return new FinalInterval( min, max );
 	}
 
-	public static final class NeighborhoodsAccessible< T > extends AbstractInterval implements RandomAccessibleInterval< Neighborhood< T > >, IterableInterval< Neighborhood< T > >
+	public static final class NeighborhoodsIterableInterval< T > extends AbstractInterval implements IterableInterval< Neighborhood< T > >
 	{
 		final RandomAccessibleInterval< T > source;
 
@@ -123,7 +128,7 @@ public class CrossShape implements Shape
 
 		final long size;
 
-		public NeighborhoodsAccessible( final RandomAccessibleInterval< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory )
+		public NeighborhoodsIterableInterval( final RandomAccessibleInterval< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory )
 		{
 			super( source );
 			this.source = source;
@@ -182,20 +187,33 @@ public class CrossShape implements Shape
 		}
 	}
 
-	@Override
-	public <T> RandomAccessible< Neighborhood< T >> neighborhoodsRandomAccessible(
-			RandomAccessible< T > arg0 )
+	public static final class NeighborhoodsAccessible< T > extends AbstractEuclideanSpace implements RandomAccessible< Neighborhood< T > >
 	{
-		// TODO Auto-generated method stub
-		return null;
+		final RandomAccessible< T > source;
+
+		final Interval span;
+
+		final CrossNeighborhoodFactory< T > factory;
+
+		public NeighborhoodsAccessible( final RandomAccessible< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory )
+		{
+			super( source.numDimensions() );
+			this.source = source;
+			this.span = span;
+			this.factory = factory;
+		}
+
+		@Override
+		public RandomAccess< Neighborhood< T >> randomAccess()
+		{
+			return new CrossNeighborhoodRandomAccess< T >( source, span, factory );
+		}
+
+		@Override
+		public RandomAccess< Neighborhood< T >> randomAccess( final Interval interval )
+		{
+			return new CrossNeighborhoodRandomAccess< T >( source, span, factory, interval );
+		}
 	}
 
-
-	@Override
-	public <T> RandomAccessible< Neighborhood< T >> neighborhoodsRandomAccessibleSafe(
-			RandomAccessible< T > arg0 )
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

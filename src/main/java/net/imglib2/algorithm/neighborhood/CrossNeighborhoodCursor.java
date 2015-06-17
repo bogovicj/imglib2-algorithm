@@ -41,6 +41,10 @@ import net.imglib2.util.IntervalIndexer;
 public final class CrossNeighborhoodCursor< T > extends CrossNeighborhoodLocalizableSampler< T > implements Cursor< Neighborhood< T > >
 {
 	private final long[] dimensions;
+	
+	private final long[] min;
+
+	private final long[] max;
 
 	private long index;
 
@@ -50,10 +54,14 @@ public final class CrossNeighborhoodCursor< T > extends CrossNeighborhoodLocaliz
 
 	public CrossNeighborhoodCursor( final RandomAccessibleInterval< T > source, final Interval span, final CrossNeighborhoodFactory< T > factory )
 	{
-		super( source, span, factory );
+		super( source, span, factory, source );
 
 		dimensions = new long[ n ];
-		dimensions( dimensions );
+		min = new long[ n ];
+		max = new long[ n ];
+		source.dimensions( dimensions );
+		source.min( min );
+		source.max( max );
 		long size = dimensions[ 0 ];
 		for ( int d = 1; d < n; ++d )
 			size *= dimensions[ d ];
@@ -65,6 +73,8 @@ public final class CrossNeighborhoodCursor< T > extends CrossNeighborhoodLocaliz
 	{
 		super( c );
 		dimensions = c.dimensions.clone();
+		min = c.min.clone();
+		max = c.max.clone();
 		maxIndex = c.maxIndex;
 		index = c.index;
 		maxIndexOnLine = c.maxIndexOnLine;
