@@ -250,13 +250,15 @@ public class CrossNeighborhoodSkipCenter< T > extends AbstractLocalizable implem
 			index = c.index;
 		}
 
-		
 		public T get()
 		{
+			int[] pt = new int[ source.numDimensions() ];
+			source.localize( pt );
+			System.out.println( "  NOW AT POINT: " + pt[0] + " " + pt[1] + " " + pt[2] );
+			
 			return source.get();
 		}
 
-		
 		public void fwd()
 		{
 			if ( ++index > maxIndexOnLine ){
@@ -281,7 +283,7 @@ public class CrossNeighborhoodSkipCenter< T > extends AbstractLocalizable implem
 			
 		}
 
-		private void nextLine()
+		protected void nextLine()
 		{
 			for ( int d = 0; d < n; ++d )
 			{
@@ -313,15 +315,24 @@ public class CrossNeighborhoodSkipCenter< T > extends AbstractLocalizable implem
 			// NB: no action.
 		}
 
-		
 		public void reset()
 		{
+			source.setPosition( currentMin );
+			source.bck( 0 );
 			index = 0;
 			maxIndexOnLine = dimensions[ 0 ];
 			curdim = 0;
 			nextLine();
-			source.bck( 0 );
 		}
+		
+//		public void reset()
+//		{
+//			index = 0;
+//			maxIndexOnLine = dimensions[ 0 ];
+//			curdim = 0;
+//			nextLine();
+//			source.bck( 0 );
+//		}
 
 		
 		public boolean hasNext()

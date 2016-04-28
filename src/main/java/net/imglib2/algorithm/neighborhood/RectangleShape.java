@@ -54,7 +54,9 @@ import net.imglib2.RandomAccessibleInterval;
  */
 public class RectangleShape implements Shape
 {
-	final int span;
+	int[] span;
+	
+	final int spanConst;
 
 	final boolean skipCenter;
 
@@ -64,7 +66,18 @@ public class RectangleShape implements Shape
 	 */
 	public RectangleShape( final int span, final boolean skipCenter )
 	{
+		this.spanConst = span;
+		this.skipCenter = skipCenter;
+	}
+	
+	/**
+	 * @param span
+	 * @param skipCenter
+	 */
+	public RectangleShape( final int[] span, final boolean skipCenter )
+	{
 		this.span = span;
+		this.spanConst = -1;
 		this.skipCenter = skipCenter;
 	}
 
@@ -104,11 +117,21 @@ public class RectangleShape implements Shape
 	{
 		final long[] min = new long[ n ];
 		final long[] max = new long[ n ];
-		for ( int d = 0; d < n; ++d )
+		if( span == null )
 		{
-			min[ d ] = -span;
-			max[ d ] = span;
+			for ( int d = 0; d < n; ++d )
+			{
+				min[ d ] = -spanConst;
+				max[ d ] = spanConst;
+			}
+		}else{
+			for ( int d = 0; d < n; ++d )
+			{
+				min[ d ] = -span[ d ];
+				max[ d ] = span[ d ];
+			}
 		}
+		
 		return new FinalInterval( min, max );
 	}
 

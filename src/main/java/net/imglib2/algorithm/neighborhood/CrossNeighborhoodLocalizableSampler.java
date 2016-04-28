@@ -98,7 +98,10 @@ public abstract class CrossNeighborhoodLocalizableSampler< T > extends AbstractE
 		currentPos = c.currentPos.clone();
 		currentMin = c.currentMin.clone();
 		currentMax = c.currentMax.clone();
-		currentNeighborhood = neighborhoodFactory.create( currentPos, currentMin, currentMax, span, source.randomAccess() );
+		currentNeighborhood = neighborhoodFactory.create( currentPos, currentMin, currentMax, span,
+				sourceInterval == null ? source.randomAccess() : source.randomAccess( sourceInterval ) );
+		
+//		currentNeighborhood = neighborhoodFactory.create( currentPos, currentMin, currentMax, span, source.randomAccess() );
 		
 	}
 

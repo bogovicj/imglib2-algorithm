@@ -82,6 +82,7 @@ public class CrossNeighborhood< T > extends CrossNeighborhoodSkipCenter<T>
 		public LocalCrossCursorCursorIC( final RandomAccess< T > source )
 		{
 			super( source );
+			reset();
 		}
 
 		protected LocalCrossCursorCursorIC( final LocalCrossCursor c )
@@ -116,9 +117,17 @@ public class CrossNeighborhood< T > extends CrossNeighborhoodSkipCenter<T>
 		{
 			atCenterStart = true;
 			switchToSuper = false;
-			source.setPosition(position);
-			source.bck(0);
 			
+			source.setPosition(position);
+//			source.bck(0);
+//			index = 0;
+//			maxIndexOnLine = dimensions[ 0 ];
+			
+			index = 0;
+			maxIndexOnLine = dimensions[ 0 ];
+			curdim = 0;
+			nextLine();
+//			source.bck( 0 );
 		}
 
 		@Override
