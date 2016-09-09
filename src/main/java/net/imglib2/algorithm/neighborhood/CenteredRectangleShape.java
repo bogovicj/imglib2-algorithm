@@ -6,8 +6,8 @@
  * John Bogovic, Albert Cardona, Barry DeZonia, Christian Dietz, Jan Funke,
  * Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
  * Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
- * Mark Longair, Brian Northan, Nick Perry, Dimiter Prodanov, Curtis Rueden,
- * Johannes Schindelin, Jean-Yves Tinevez and Michael Zinsmaier.
+ * Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
+ * Jean-Yves Tinevez and Michael Zinsmaier.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -56,8 +56,8 @@ import net.imglib2.util.Util;
  * This factory exists because {@link RectangleShape} which is based on the same
  * components, only allows for square neighborhoods.
  *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
- * @author Jean-Yves Tinevez <jeanyves.tinevez@gmail.com>
+ * @author Tobias Pietzsch
+ * @author Jean-Yves Tinevez
  * @author Jonathan Hale (University of Konstanz)
  */
 public class CenteredRectangleShape implements Shape

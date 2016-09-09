@@ -6,8 +6,8 @@
  * John Bogovic, Albert Cardona, Barry DeZonia, Christian Dietz, Jan Funke,
  * Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
  * Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
- * Mark Longair, Brian Northan, Nick Perry, Dimiter Prodanov, Curtis Rueden,
- * Johannes Schindelin, Jean-Yves Tinevez and Michael Zinsmaier.
+ * Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
+ * Jean-Yves Tinevez and Michael Zinsmaier.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -52,7 +52,7 @@ import net.imglib2.util.Intervals;
  * <tt>Jones and Soilles. Periodic lines: Definition, cascades, and application
  * to granulometries. Pattern Recognition Letters (1996) vol. 17 (10) pp. 1057-1063</tt>
  * 
- * @author Jean-Yves Tinevez <jeanyves.tinevez@gmail.com> Sep 3, 2013
+ * @author Jean-Yves Tinevez Sep 3, 2013
  * 
  * @param <T>
  */
