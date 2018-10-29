@@ -54,6 +54,7 @@ import net.imglib2.type.numeric.NumericType;
  * @param <T>
  *            input and output type
  */
+@Deprecated
 public final class ConvolverNativeTypeBuffered< T extends NumericType< T > & NativeType< T > > implements Runnable
 {
 	/**
@@ -113,7 +114,7 @@ public final class ConvolverNativeTypeBuffered< T extends NumericType< T > & Nat
 		k1k1 = k1 + k1;
 
 		buflen = ( int ) lineLength + 2 * k1k1;
-		final ArrayImg< T, ? > buf = new ArrayImgFactory< T >().create( new long[] { buflen }, type );
+		final ArrayImg< T, ? > buf = new ArrayImgFactory<>( type ).create( buflen );
 		b1 = buf.randomAccess().get();
 
 		tmp = type.createVariable();
